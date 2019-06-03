@@ -1,0 +1,53 @@
+language: rust
+
+sudo: required
+
+matrix:
+  allow_failures:
+    - rust: nightly
+
+env:
+  - CODECOV_TOKEN="4dad02c5-a383-4b0f-a78d-1d80f7ca8662"
+
+rust:
+  - stable
+  - nightly
+
+jobs:
+  include:
+      - stage: test
+        script: cargo test --verbose --all
+      - stage: build
+        script: cargo build --verbose --all
+
+addons:
+  apt:
+    packages:
+      - libcurl4-openssl-dev
+      - libelf-dev
+      - libdw-dev
+      - cmake
+      - gcc
+      - binutils-dev
+      - libiberty-dev
+
+after_success: |
+  wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
+  tar xzf master.tar.gz &&
+  cd kcov-master &&
+  mkdir build &&
+  cd build &&
+  cmake .. &&
+  make &&
+  make install DESTDIR=../../kcov-build &&
+  cd ../.. &&
+  rm -rf kcov-master &&
+  ls ./ &&
+  ls target/debug/ &&
+  for file in target/debug/historical_chrono*; do [ -x "${file}" ] || continue; mkdir -p "target/cov/$(basename $file)"; ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done &&
+  bash <(curl -s https://codecov.io/bash) &&
+  echo "Uploaded code coverage"
+
+branches:
+  only:
+    - master

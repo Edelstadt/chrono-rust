@@ -11,39 +11,29 @@ fn generate_d_map() -> HashMap<u8, String> {
         "GF", "E", "D", "C", "BA", "G", "F", "E", "DC", "B", "A", "G", "FE", "D", "C", "B", "AG",
         "F", "E", "D", "CB", "A", "G", "F", "ED", "C", "B", "A",
     ];
-    let mut map = HashMap::new();
-    for (i, letter) in dom_let_array.iter().enumerate() {
-        map.insert((i + 1) as u8, letter.to_string());
-    }
-    map
+
+    dom_let_array
+        .iter()
+        .enumerate()
+        .map(|(k, v)| ((k + 1) as u8, v.to_string())) // TODO change to &str
+        .collect()
 }
 
-fn generate_d_g_map(year: i16) -> HashMap<String, String> {
+fn generate_d_g_map(year: i16) -> HashMap<String, String> { // TODO change to &str
     fn tt(shift_count: usize) -> HashMap<String, String> {
         let mut copy_simple = SIMPLE_ARRAY;
-        let copy_simple_2 = SIMPLE_ARRAY;
         let mut copy_double = DOUBLE_ARRAY;
-        let copy_double_2 = DOUBLE_ARRAY;
         copy_simple.rotate_right(shift_count);
         copy_double.rotate_right(shift_count);
-        let result_vec = [copy_simple, copy_double]
-            .concat()
+
+        let shifted = [copy_simple, copy_double]
+            .concat();
+
+        [SIMPLE_ARRAY, DOUBLE_ARRAY].concat()
             .iter()
-            .map(|&x| String::from(x) as String)
-            .collect::<Vec<String>>();
-        let result_vec_2 = [copy_simple_2, copy_double_2]
-            .concat()
-            .iter()
-            .map(|&x| String::from(x))
-            .collect::<Vec<String>>();
-        let it = result_vec_2.iter().zip(result_vec.iter());
-        let map: HashMap<&String, &String> = it.collect();
-        let map2: HashMap<String, String> = map
-            .clone()
-            .iter()
+            .zip(shifted)
             .map(|(k, v)| (k.to_string(), v.to_string()))
-            .collect();
-        map2
+            .collect()
     }
 
     match year {

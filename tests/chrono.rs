@@ -9,6 +9,7 @@ use historical_chrono::DominicalLetter;
 #[test]
 fn test_dominical_letter_g() {
   assert_eq!("D", Chrono::new(2015, true).get_dominical_letter_g());
+  assert!(std::panic::catch_unwind(|| Chrono::new(3000, true).get_dominical_letter_g()).is_err());
 }
 
 #[test]
@@ -18,8 +19,6 @@ fn test_dominical_letter_j() {
 
 #[test]
 fn test_solar_circle() {
-    println!("epact g {}", Chrono::new(341, true).get_solar_circle());
-
     assert_eq!(14, Chrono::new(341, true).get_solar_circle());
     assert_eq!(15, Chrono::new(1126, true).get_solar_circle());
     assert_eq!(24, Chrono::new(1583, true).get_solar_circle());

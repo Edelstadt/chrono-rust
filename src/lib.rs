@@ -6,7 +6,7 @@ use std::collections::HashMap;
 const SIMPLE_ARRAY: [&str; 7] = ["A", "B", "C", "D", "E", "F", "G"];
 const DOUBLE_ARRAY: [&str; 7] = ["GF", "BA", "DC", "FE", "AG", "CB", "ED"];
 
-fn generate_d_map() -> HashMap<u8, String> {
+fn generate_d_map() -> HashMap<u8, &'static str> {
     let dom_let_array = [
         "GF", "E", "D", "C", "BA", "G", "F", "E", "DC", "B", "A", "G", "FE", "D", "C", "B", "AG",
         "F", "E", "D", "CB", "A", "G", "F", "ED", "C", "B", "A",
@@ -15,12 +15,12 @@ fn generate_d_map() -> HashMap<u8, String> {
     dom_let_array
         .iter()
         .enumerate()
-        .map(|(k, v)| ((k + 1) as u8, v.to_string())) // TODO change to &str
+        .map(|(k, &v)| ((k + 1) as u8, v))
         .collect()
 }
 
-fn generate_d_g_map(year: i16) -> HashMap<String, String> { // TODO change to &str
-    fn tt(shift_count: usize) -> HashMap<String, String> {
+fn generate_d_g_map(year: i16) -> HashMap<&'static str, &'static str> {
+    fn tt(shift_count: usize) -> HashMap<&'static str, &'static str> {
         let mut copy_simple = SIMPLE_ARRAY;
         let mut copy_double = DOUBLE_ARRAY;
         copy_simple.rotate_right(shift_count);
@@ -32,7 +32,7 @@ fn generate_d_g_map(year: i16) -> HashMap<String, String> { // TODO change to &s
         [SIMPLE_ARRAY, DOUBLE_ARRAY].concat()
             .iter()
             .zip(shifted)
-            .map(|(k, v)| (k.to_string(), v.to_string()))
+            .map(|(&k, v)| (k, v))
             .collect()
     }
 
@@ -58,8 +58,8 @@ pub trait SolarCircle {
 }
 
 pub trait DominicalLetter {
-    fn get_dominical_letter_j(&self) -> String;
-    fn get_dominical_letter_g(&self) -> String;
+    fn get_dominical_letter_j(&self) -> &str;
+    fn get_dominical_letter_g(&self) -> &str;
 }
 
 pub trait Epact {
@@ -92,19 +92,13 @@ impl Eastern for Chrono {
         let help_e: u16 = ((6 + (2 * help_b) + (4 * help_c) + (6 * help_d)) % 7) as u16;
 
         if (22 + help_d + help_e) > 31 {
-            let date_fomat: String = format!("{}-{}-{}", self.year, 4, (help_d + help_e - 9));
-            let date_only = NaiveDate::parse_from_str(&date_fomat, "%Y-%m-%d");
-            match date_only {
-                Ok(n) => n,
-                Err(_err) => panic!(),
-            }
+            let date_format: String = format!("{}-{}-{}", self.year, 4, (help_d + help_e - 9));
+            NaiveDate::parse_from_str(&date_format, "%Y-%m-%d")
+                .unwrap()
         } else {
-            let date_fomat: String = format!("{}-{}-{}", self.year, 3, (22 + help_d + help_e));
-            let date_only = NaiveDate::parse_from_str(&date_fomat, "%Y-%m-%d");
-            match date_only {
-                Ok(n) => n,
-                Err(_err) => panic!(),
-            }
+            let date_format: String = format!("{}-{}-{}", self.year, 3, (22 + help_d + help_e));
+            NaiveDate::parse_from_str(&date_format, "%Y-%m-%d")
+                .unwrap()
         }
     }
 
@@ -115,39 +109,35 @@ impl Eastern for Chrono {
 
 impl GoldenNumber for Chrono {
     fn get_golden_number(&self) -> u8 {
-        let golden_number: u8 = ((self.year + 1) % 19) as u8;
-        if golden_number == 0 {
-            return 19;
+        match (self.year + 1) % 19 {
+            0 => 19,
+            n => n as u8,
         }
-        golden_number
     }
 }
 
 impl Concurrents for Chrono {
     fn get_concurrents(&self) -> u8 {
         let quarter = self.year / 4;
-        let concurrents: u8 = ((self.year + quarter + 4) % 7) as u8;
-        if concurrents == 0 {
-            return 7;
+        match (self.year + quarter + 4) % 7 {
+            0 => 7,
+            n => n as u8,
         }
-        concurrents
     }
 }
 
 impl SolarCircle for Chrono {
     fn get_solar_circle(&self) -> u8 {
-        let solar_mod: u8 = ((self.year + 9) % 28) as u8;
-        if solar_mod == 0 {
-            return 28;
+        match (self.year + 9) % 28 {
+            0 => 28,
+            n => n as u8,
         }
-        solar_mod
     }
 }
 
 impl Epact for Chrono {
     fn get_epact_j(&self) -> u8 {
-        let golden_number = &self::GoldenNumber::get_golden_number(self);
-        ((golden_number - 1) * 11) % 30
+        ((self.get_golden_number() - 1) * 11) % 30
     }
 
     fn get_epact_g(&self) -> u8 {
@@ -155,7 +145,7 @@ impl Epact for Chrono {
             let century: u8 = ((self.year / 100) + 1) as u8;
             let correction_solar: u8 = (3 * century / 4) as u8;
             let correction_lunar: u8 = ((8.0 * f32::from(century) + 5.0) / 25.0).trunc() as u8;
-            let epact_j: u8 = self::Epact::get_epact_j(self);
+            let epact_j: u8 = self.get_epact_j();
             ((epact_j as i8 - correction_solar as i8 + correction_lunar as i8 + 8) % 30) as u8
         } else {
             panic!()
@@ -164,18 +154,15 @@ impl Epact for Chrono {
 }
 
 impl DominicalLetter for Chrono {
-    fn get_dominical_letter_j(&self) -> String {
-        let solar_circle = &self::SolarCircle::get_solar_circle(self);
-        match generate_d_map().get(solar_circle) {
-            Some(letter) => letter.clone(),
-            None => panic!(),
-        }
+    fn get_dominical_letter_j(&self) -> &str {
+        generate_d_map()
+            .get(&self.get_solar_circle())
+            .unwrap()
     }
 
-    fn get_dominical_letter_g(&self) -> String {
-        match generate_d_g_map(self.year).get(&self.get_dominical_letter_j()) {
-            Some(letter) => letter.clone(),
-            None => panic!(),
-        }
+    fn get_dominical_letter_g(&self) -> &str {
+        generate_d_g_map(self.year)
+            .get(&self.get_dominical_letter_j())
+            .unwrap()
     }
 }

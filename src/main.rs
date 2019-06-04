@@ -6,7 +6,8 @@ use historical_chrono::SolarCircle;
 use historical_chrono::{Chrono, Eastern};
 
 fn main() {
-    let chrono = Chrono::new(2015, true);
+    let year = 2015;
+    let chrono = Chrono::new(year, true);
     let solar_circle = chrono.get_solar_circle();
     let dominical_letter_j = chrono.get_dominical_letter_j();
     let dominical_letter_g = chrono.get_dominical_letter_g();
@@ -16,6 +17,7 @@ fn main() {
     let epact_g = chrono.get_epact_g();
     let eastern_j = chrono.eastern_j();
 
+    println!("Year {}", year);
     println!("solar circle {}", solar_circle);
     println!("dom letter j {}", dominical_letter_j);
     println!("dom letter g {}", dominical_letter_g);

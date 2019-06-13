@@ -21,8 +21,6 @@ jobs:
           - cargo test --verbose --all
         before_script:
           - rustup component add clippy
-          - cargo install --force cargo-travis && export PATH=$HOME/.cargo/bin:$PATH
-        after_success: cargo coverralls
       - stage: build
         script: cargo build --verbose --all
 
@@ -32,37 +30,27 @@ addons:
       - libcurl4-openssl-dev
       - libelf-dev
       - libdw-dev
-      - binutils-dev
       - cmake
-    sources:
-      - kalakris-cmake
-#addons:
-#  apt:
-#    packages:
-#      - libcurl4-openssl-dev
-#      - libelf-dev
-#      - libdw-dev
-#      - cmake
-#      - gcc
-#      - binutils-dev
-#      - libiberty-dev
-#
-#after_success: |
-#  wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
-#  tar xzf master.tar.gz &&
-#  cd kcov-master &&
-#  mkdir build &&
-#  cd build &&
-#  cmake .. &&
-#  make &&
-#  make install DESTDIR=../../kcov-build &&
-#  cd ../.. &&
-#  rm -rf kcov-master &&
-#  ls ./ &&
-#  ls target/debug/ &&
-#  for file in target/debug/historical_chrono*; do [ -x "${file}" ] || continue; mkdir -p "target/cov/$(basename $file)"; ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done &&
-#  bash <(curl -s https://codecov.io/bash) &&
-#  echo "Uploaded code coverage"
+      - gcc
+      - binutils-dev
+      - libiberty-dev
+
+after_success: |
+  wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
+  tar xzf master.tar.gz &&
+  cd kcov-master &&
+  mkdir build &&
+  cd build &&
+  cmake .. &&
+  make &&
+  make install DESTDIR=../../kcov-build &&
+  cd ../.. &&
+  rm -rf kcov-master &&
+  ls ./ &&
+  ls target/debug/ &&
+  for file in target/debug/historical_chrono*; do [ -x "${file}" ] || continue; mkdir -p "target/cov/$(basename $file)"; ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done &&
+  bash <(curl -s https://codecov.io/bash) &&
+  echo "Uploaded code coverage"
 
 branches:
   only:

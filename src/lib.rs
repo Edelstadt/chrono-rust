@@ -20,7 +20,7 @@ fn generate_d_map() -> HashMap<u8, &'static str> {
 }
 
 fn generate_d_g_map(year: i16) -> HashMap<&'static str, &'static str> {
-    fn tt(shift_count: usize) -> HashMap<&'static str, &'static str> {
+    fn generate_map(shift_count: usize) -> HashMap<&'static str, &'static str> {
         let mut copy_simple = SIMPLE_ARRAY;
         let mut copy_double = DOUBLE_ARRAY;
         copy_simple.rotate_right(shift_count);
@@ -37,10 +37,10 @@ fn generate_d_g_map(year: i16) -> HashMap<&'static str, &'static str> {
     }
 
     match year {
-        d if d <= 1699 => tt(4),
-        d if d <= 1799 => tt(3),
-        d if d <= 1899 => tt(2),
-        d if d <= 2099 => tt(1),
+        d if d <= 1699 => generate_map(4),
+        d if d <= 1799 => generate_map(3),
+        d if d <= 1899 => generate_map(2),
+        d if d <= 2099 => generate_map(1),
         _ => panic!(),
     }
 }

@@ -16,7 +16,10 @@ rust:
 jobs:
   include:
       - stage: test
-        script: cargo test --verbose --all
+        script:
+          - cargo clippy --all-targets --all-features -- -D warnings
+          - cargo test --verbose --all
+        before_script: rustup component add clippy
       - stage: build
         script: cargo build --verbose --all
 

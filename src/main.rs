@@ -19,6 +19,7 @@ fn main() {
     let eastern_g = chrono.eastern_g();
     let septuagesime = chrono.septuagesima();
     let quinquagesina = chrono.quinquagesina();
+    let second_sun_lent = chrono.second_sun_lent();
 
     println!("Year {}", year);
     println!("solar circle {}", solar_circle);
@@ -32,4 +33,5 @@ fn main() {
     println!("eastern g {}", eastern_g);
     println!("septuagesime {}", septuagesime);
     println!("quinquagesina {}", quinquagesina);
+    println!("second_sun_lent {}", second_sun_lent);
 }

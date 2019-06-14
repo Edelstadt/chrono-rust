@@ -78,6 +78,9 @@ pub trait MovableFeast {
     fn deduct(&self, date: NaiveDate, quantity: i64) -> NaiveDate;
     fn septuagesima(&self) -> NaiveDate;
     fn quinquagesina(&self) -> NaiveDate;
+    fn sexagesima(&self) -> NaiveDate;
+    fn dies_cinerum(&self) -> NaiveDate;
+    fn second_sun_lent(&self) -> NaiveDate;
 }
 
 pub struct Chrono {
@@ -91,6 +94,31 @@ impl Chrono {
     }
 }
 
+macro_rules! movable_macro {
+    ($name:ident, $years:expr, $op:ident, $days:expr, $daysExp:expr) => {
+        fn $name(&self) -> NaiveDate {
+        match self.year {
+            1300 | 1400 | 1500 => self.$op(
+                if self.gregorian { self.eastern_g() } else { self.eastern_j() },
+                $days,
+            ),
+            _ => self.$op(
+                if self.gregorian { self.eastern_g() } else { self.eastern_j() },
+                $daysExp,
+            )
+        }
+    }
+    };
+    ($name:ident, $op:ident, $days:expr) => {
+        fn $name(&self) -> NaiveDate {
+        self.$op(
+                if self.gregorian { self.eastern_g() } else { self.eastern_j() },
+                $days,
+            )
+    }
+}
+}
+
 impl MovableFeast for Chrono {
     fn add(&self, date: NaiveDate, quantity: i64) -> NaiveDate {
         date + Duration::days(quantity)
@@ -100,31 +128,11 @@ impl MovableFeast for Chrono {
         date - Duration::days(quantity)
     }
 
-    fn septuagesima(&self) -> NaiveDate {
-        match self.year {
-            1300 | 1400 | 1500 => self.deduct(
-                if self.gregorian { self.eastern_g() } else { self.eastern_j() },
-                62,
-            ),
-            _ => self.deduct(
-                if self.gregorian { self.eastern_g() } else { self.eastern_j() },
-                7 * 9,
-            )
-        }
-    }
-
-    fn quinquagesina(&self) -> NaiveDate {
-        match self.year {
-            1300 | 1400 | 1500 => self.deduct(
-                if self.gregorian { self.eastern_g() } else { self.eastern_j() },
-                48,
-            ),
-            _ => self.deduct(
-                if self.gregorian { self.eastern_g() } else { self.eastern_j() },
-                7 * 7,
-            )
-        }
-    }
+    movable_macro!(septuagesima, true, deduct, 62, 7 * 9);
+    movable_macro!(quinquagesina, true, deduct, 48, 7 * 7);
+    movable_macro!(sexagesima, true, deduct, 55, 7 * 8);
+    movable_macro!(dies_cinerum, true, deduct, 45, 46);
+    movable_macro!(second_sun_lent, deduct, 7 * 5);
 }
 
 impl Eastern for Chrono {

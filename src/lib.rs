@@ -101,28 +101,26 @@ impl MovableFeast for Chrono {
     }
 
     fn septuagesima(&self) -> NaiveDate {
-        if self.year == 1300 || self.year == 1400 || self.year == 1500 {
-            self.deduct(
-                if self.gregorian {self.eastern_g()} else{ self.eastern_j() },
+        match self.year {
+            1300 | 1400 | 1500 => self.deduct(
+                if self.gregorian { self.eastern_g() } else { self.eastern_j() },
                 62,
-            )
-        } else {
-            self.deduct(
-                if self.gregorian {self.eastern_g()} else{ self.eastern_j() },
+            ),
+            _ => self.deduct(
+                if self.gregorian { self.eastern_g() } else { self.eastern_j() },
                 7 * 9,
             )
         }
     }
 
     fn quinquagesina(&self) -> NaiveDate {
-        if self.year == 1300 || self.year == 1400 || self.year == 1500 {
-            self.deduct(
-                if self.gregorian {self.eastern_g()} else{ self.eastern_j() },
+        match self.year {
+            1300 | 1400 | 1500 => self.deduct(
+                if self.gregorian { self.eastern_g() } else { self.eastern_j() },
                 48,
-            )
-        } else {
-            self.deduct(
-                if self.gregorian {self.eastern_g()} else{ self.eastern_j() },
+            ),
+            _ => self.deduct(
+                if self.gregorian { self.eastern_g() } else { self.eastern_j() },
                 7 * 7,
             )
         }
@@ -155,11 +153,11 @@ impl Eastern for Chrono {
             let help_c: u16 = (help_b / 25 + 1) as u16;
             let mut help_d: u16 = ((help_c * 3) >> 2) as u16;
             let mut help_e: u16 = (((help_a * 19) - ((help_c * 8 + 5) / 25) + help_d + 15) % 30) as u16;
-            help_e += (29578 - help_a - help_e * 32) >> 10;
+            help_e += (29_578 - help_a - help_e * 32) >> 10;
             help_e -= ((self.year as u16 % 7) + help_b - help_d + help_e + 2) % 7;
             help_d = help_e >> 5;
             let day: u8 = (help_e - help_d * 31) as u8;
-            let month:u8 = (help_d + 3) as u8;
+            let month: u8 = (help_d + 3) as u8;
             let date_format: String = format!("{}-{}-{}", self.year, month, day);
             NaiveDate::parse_from_str(&date_format, "%Y-%m-%d")
                 .unwrap()

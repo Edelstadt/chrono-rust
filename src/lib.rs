@@ -153,11 +153,11 @@ impl MovableFeast for Chrono {
     movable_macro!(kychava_nedele, deduct, 7 * 4);
     movable_macro!(druzebna_nedele, deduct, 7 * 3);
     movable_macro!(smrtna_nedele, deduct, 7 * 2);
-    movable_macro!(kvetna_nedele, deduct, 7 * 1);
+    movable_macro!(kvetna_nedele, deduct, 7);
     movable_macro!(zeleny_ctvrtek, deduct, 3);
     movable_macro!(velky_patek, deduct, 2);
     movable_macro!(bila_sobota, deduct, 1);
-    movable_macro!(bila_nedele, add, 7 * 1);
+    movable_macro!(bila_nedele, add, 7);
     movable_macro!(den_svatosti, add, 12);
     movable_macro!(misericordia, add, 7 * 2);
     movable_macro!(jubilate, add, 7 * 3);

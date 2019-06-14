@@ -1,4 +1,4 @@
-use historical_chrono::Concurrents;
+use historical_chrono::{Concurrents, MovableFeast};
 use historical_chrono::DominicalLetter;
 use historical_chrono::Epact;
 use historical_chrono::GoldenNumber;
@@ -16,6 +16,9 @@ fn main() {
     let epact_j = chrono.get_epact_j();
     let epact_g = chrono.get_epact_g();
     let eastern_j = chrono.eastern_j();
+    let eastern_g = chrono.eastern_g();
+    let septuagesime = chrono.septuagesima();
+    let quinquagesina = chrono.quinquagesina();
 
     println!("Year {}", year);
     println!("solar circle {}", solar_circle);
@@ -26,4 +29,7 @@ fn main() {
     println!("epact j {}", epact_j);
     println!("epact g {}", epact_g);
     println!("eastern j {}", eastern_j);
+    println!("eastern g {}", eastern_g);
+    println!("septuagesime {}", septuagesime);
+    println!("quinquagesina {}", quinquagesina);
 }

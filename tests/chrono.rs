@@ -1,5 +1,5 @@
 use chrono::NaiveDate;
-use historical_chrono::Concurrents;
+use historical_chrono::{Concurrents, MovableFeast};
 use historical_chrono::Epact;
 use historical_chrono::GoldenNumber;
 use historical_chrono::SolarCircle;
@@ -78,5 +78,48 @@ fn test_eastern_j() {
     assert_eq!(
         NaiveDate::parse_from_str("1492-4-22", "%Y-%m-%d").unwrap(),
         Chrono::new(1492, true).eastern_j()
+    );
+}
+
+#[test]
+fn test_eastern_g() {
+    assert_eq!(
+        NaiveDate::parse_from_str("2015-4-5", "%Y-%m-%d").unwrap(),
+        Chrono::new(2015, true).eastern_g()
+    );
+    assert!(std::panic::catch_unwind(|| Chrono::new(2015, false)
+        .eastern_g())
+        .is_err());
+}
+
+#[test]
+fn test_septuagesima() {
+    assert_eq!(
+        NaiveDate::parse_from_str("1126-2-7", "%Y-%m-%d").unwrap(),
+        Chrono::new(1126, false).septuagesima()
+    );
+    assert_eq!(
+        NaiveDate::parse_from_str("1666-2-21", "%Y-%m-%d").unwrap(),
+        Chrono::new(1666, true).septuagesima()
+    );
+    assert_eq!(
+        NaiveDate::parse_from_str("1791-2-20", "%Y-%m-%d").unwrap(),
+        Chrono::new(1791, true).septuagesima()
+    );
+    assert_eq!(
+        NaiveDate::parse_from_str("1272-2-21", "%Y-%m-%d").unwrap(),
+        Chrono::new(1272, false).septuagesima()
+    );
+    assert_eq!(
+        NaiveDate::parse_from_str("1522-2-16", "%Y-%m-%d").unwrap(),
+        Chrono::new(1522, false).septuagesima()
+    );
+    assert_eq!(
+        NaiveDate::parse_from_str("1764-2-19", "%Y-%m-%d").unwrap(),
+        Chrono::new(1764, true).septuagesima()
+    );
+    assert_eq!(
+        NaiveDate::parse_from_str("1300-2-7", "%Y-%m-%d").unwrap(),
+        Chrono::new(1300, false).septuagesima()
     );
 }

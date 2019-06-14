@@ -2,6 +2,7 @@ extern crate chrono;
 
 use chrono::NaiveDate;
 use std::collections::HashMap;
+use chrono::Duration;
 
 const SIMPLE_ARRAY: [&str; 7] = ["A", "B", "C", "D", "E", "F", "G"];
 const DOUBLE_ARRAY: [&str; 7] = ["GF", "BA", "DC", "FE", "AG", "CB", "ED"];
@@ -72,6 +73,13 @@ pub trait Eastern {
     fn eastern_g(&self) -> NaiveDate;
 }
 
+pub trait MovableFeast {
+    fn add(&self, date: NaiveDate, quantity: i64) -> NaiveDate;
+    fn deduct(&self, date: NaiveDate, quantity: i64) -> NaiveDate;
+    fn septuagesima(&self) -> NaiveDate;
+    fn quinquagesina(&self) -> NaiveDate;
+}
+
 pub struct Chrono {
     year: i16,
     gregorian: bool,
@@ -80,6 +88,44 @@ pub struct Chrono {
 impl Chrono {
     pub fn new(year: i16, gregorian: bool) -> Chrono {
         Chrono { year, gregorian }
+    }
+}
+
+impl MovableFeast for Chrono {
+    fn add(&self, date: NaiveDate, quantity: i64) -> NaiveDate {
+        date + Duration::days(quantity)
+    }
+
+    fn deduct(&self, date: NaiveDate, quantity: i64) -> NaiveDate {
+        date - Duration::days(quantity)
+    }
+
+    fn septuagesima(&self) -> NaiveDate {
+        if self.year == 1300 || self.year == 1400 || self.year == 1500 {
+            self.deduct(
+                if self.gregorian {self.eastern_g()} else{ self.eastern_j() },
+                62,
+            )
+        } else {
+            self.deduct(
+                if self.gregorian {self.eastern_g()} else{ self.eastern_j() },
+                7 * 9,
+            )
+        }
+    }
+
+    fn quinquagesina(&self) -> NaiveDate {
+        if self.year == 1300 || self.year == 1400 || self.year == 1500 {
+            self.deduct(
+                if self.gregorian {self.eastern_g()} else{ self.eastern_j() },
+                48,
+            )
+        } else {
+            self.deduct(
+                if self.gregorian {self.eastern_g()} else{ self.eastern_j() },
+                7 * 7,
+            )
+        }
     }
 }
 
@@ -103,7 +149,23 @@ impl Eastern for Chrono {
     }
 
     fn eastern_g(&self) -> NaiveDate {
-        NaiveDate::from_num_days_from_ce(20)
+        if self.gregorian {
+            let help_a: u16 = (self.year % 19) as u16;
+            let help_b: u16 = (self.year >> 2) as u16;
+            let help_c: u16 = (help_b / 25 + 1) as u16;
+            let mut help_d: u16 = ((help_c * 3) >> 2) as u16;
+            let mut help_e: u16 = (((help_a * 19) - ((help_c * 8 + 5) / 25) + help_d + 15) % 30) as u16;
+            help_e += (29578 - help_a - help_e * 32) >> 10;
+            help_e -= ((self.year as u16 % 7) + help_b - help_d + help_e + 2) % 7;
+            help_d = help_e >> 5;
+            let day: u8 = (help_e - help_d * 31) as u8;
+            let month:u8 = (help_d + 3) as u8;
+            let date_format: String = format!("{}-{}-{}", self.year, month, day);
+            NaiveDate::parse_from_str(&date_format, "%Y-%m-%d")
+                .unwrap()
+        } else {
+            panic!()
+        }
     }
 }
 

@@ -123,3 +123,27 @@ fn test_septuagesima() {
         Chrono::new(1300, false).septuagesima()
     );
 }
+
+#[test]
+fn test_misericordia() {
+    assert_eq!(
+        NaiveDate::parse_from_str("1126-4-25", "%Y-%m-%d").unwrap(),
+        Chrono::new(1126, false).misericordia()
+    );
+    assert_eq!(
+        NaiveDate::parse_from_str("1443-5-5", "%Y-%m-%d").unwrap(),
+        Chrono::new(1443, false).misericordia()
+    );
+    assert_eq!(
+        NaiveDate::parse_from_str("1737-5-5", "%Y-%m-%d").unwrap(),
+        Chrono::new(1737, true).misericordia()
+    );
+    assert_eq!(
+        NaiveDate::parse_from_str("1598-4-5", "%Y-%m-%d").unwrap(),
+        Chrono::new(1598, true).misericordia()
+    );
+    assert_eq!(
+        NaiveDate::parse_from_str("1690-4-9", "%Y-%m-%d").unwrap(),
+        Chrono::new(1690, true).misericordia()
+    );
+}

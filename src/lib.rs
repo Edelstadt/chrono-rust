@@ -80,7 +80,23 @@ pub trait MovableFeast {
     fn quinquagesina(&self) -> NaiveDate;
     fn sexagesima(&self) -> NaiveDate;
     fn dies_cinerum(&self) -> NaiveDate;
+    fn reminiscere(&self) -> NaiveDate;
     fn second_sun_lent(&self) -> NaiveDate;
+    fn kychava_nedele(&self) -> NaiveDate;
+    fn druzebna_nedele(&self) -> NaiveDate;
+    fn smrtna_nedele(&self) -> NaiveDate;
+    fn kvetna_nedele(&self) -> NaiveDate;
+    fn zeleny_ctvrtek(&self) -> NaiveDate;
+    fn velky_patek(&self) -> NaiveDate;
+    fn bila_sobota(&self) -> NaiveDate;
+    fn bila_nedele(&self) -> NaiveDate;
+    fn den_svatosti(&self) -> NaiveDate;
+    fn misericordia(&self) -> NaiveDate;
+    fn jubilate(&self) -> NaiveDate;
+    fn exaudi(&self) -> NaiveDate;
+    fn letnice(&self) -> NaiveDate;
+    fn trojice(&self) -> NaiveDate;
+    fn boziho_tela(&self) -> NaiveDate;
 }
 
 pub struct Chrono {
@@ -131,8 +147,24 @@ impl MovableFeast for Chrono {
     movable_macro!(septuagesima, true, deduct, 62, 7 * 9);
     movable_macro!(quinquagesina, true, deduct, 48, 7 * 7);
     movable_macro!(sexagesima, true, deduct, 55, 7 * 8);
+    movable_macro!(reminiscere, true, deduct, 41, 7 * 6);
     movable_macro!(dies_cinerum, true, deduct, 45, 46);
     movable_macro!(second_sun_lent, deduct, 7 * 5);
+    movable_macro!(kychava_nedele, deduct, 7 * 4);
+    movable_macro!(druzebna_nedele, deduct, 7 * 3);
+    movable_macro!(smrtna_nedele, deduct, 7 * 2);
+    movable_macro!(kvetna_nedele, deduct, 7 * 1);
+    movable_macro!(zeleny_ctvrtek, deduct, 3);
+    movable_macro!(velky_patek, deduct, 2);
+    movable_macro!(bila_sobota, deduct, 1);
+    movable_macro!(bila_nedele, add, 7 * 1);
+    movable_macro!(den_svatosti, add, 12);
+    movable_macro!(misericordia, add, 7 * 2);
+    movable_macro!(jubilate, add, 7 * 3);
+    movable_macro!(exaudi, add, 7 * 6);
+    movable_macro!(letnice, add, 7 * 7);
+    movable_macro!(trojice, add, 7 * 8);
+    movable_macro!(boziho_tela, add, 60);
 }
 
 impl Eastern for Chrono {
